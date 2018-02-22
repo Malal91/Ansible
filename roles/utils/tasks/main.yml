@@ -1,0 +1,18 @@
+---
+    ##################################################
+    #    les outils neccessaires pour le serveur     #
+    ##################################################
+
+- name: installation des outils neccessaires
+  become: yes
+  apt: name={{ item }} apt_cache=yes state=latest
+  with_items:
+    - git
+    - curl
+    - vim
+    - wget
+    - make
+    - unzip
+    - tar
+    - zsh
+    - htop

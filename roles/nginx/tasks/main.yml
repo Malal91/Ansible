@@ -1,0 +1,25 @@
+---
+  ##############################
+  #    Configuration nginx     #
+  #############################
+
+- name: Installation nginx
+  become: yes
+  apt:
+    name=nginx
+    state=latest
+  notify: restart nginx
+
+- name: Suppression de default.conf
+  become: yes
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: reload nginx
+
+- name: Installation PHP
+  become: yes
+  include: php.yml
+
+- name: Configuration des sites
+  become: yes
+  include: site.yml
+  with_items: domains

@@ -1,0 +1,9 @@
+---
+- name: restart nginx
+  service: name=nginx stated=restarted enabled=true
+
+- name: reloaded nginx
+  action: service name=nginx  state=reloaded
+
+- name: restart php
+  service: name=php7.0-fpm state=restarted

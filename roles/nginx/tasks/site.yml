@@ -1,0 +1,18 @@
+---
+  ##############################################
+  #    Configuration des sites disponibles     #
+  ##############################################
+
+- name: Création du domaine
+  file: path=/home/{{ user }}/{{ item.domain }}/www state=directory owner={{ user }}
+
+- name: Lien symbolique vers /var/www
+  file: src=/home/{{ user }}/{{ item.domain }}/www dest=/var/www/{{ item.domain }} state=link
+
+- name: Création de la configuration
+  template: src=templates/nginx.j2 dest=/etc/nginx/site-available/{{ item.domain }} force=yes
+  notify: reload nginx
+
+- name: "Activation du domaine {{ item.domain }}"
+  file: src=/etc/nginx/site-available/{{ item.domain }} dest=/etc/nginx/sites-enabled/{{ item.domain }} state=link
+  notify: reload nginx
