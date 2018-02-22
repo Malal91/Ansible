@@ -1,0 +1,20 @@
+---
+- hosts: web
+  remote_user: osr
+  vars:
+    user: opensuccessroom
+    owner: opensuccessroom
+    home: opensuccessroom
+    domains:
+      - domain: opensuccessroom
+        php: yes
+      - domain: amadoupitadiallo
+        php: no
+
+  roles:
+    - utils
+    - user
+    - nginx
+    - security
+    - ssh
+...

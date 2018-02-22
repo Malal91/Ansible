@@ -1,0 +1,31 @@
+---
+    ###################
+    #    Securité     #
+    ###################
+
+- name: Installation de fail2ban
+  become: yes
+  apt: name=fail2ban state=present
+
+- name: Copy jail.conf
+  become: yes
+  template: src=jail.conf.j2 dest=/etc/fail2ban/jail.conf
+  notify:
+    restart fail2ban
+
+- name: installation UFW - Uncomplicated Firewall
+  become: yes
+  apt: name=ufw state=latest update_cache=yes
+
+- name : Enable UFW and close all ports
+  become: yes
+  ufw: state=enabled policy=deny
+
+- name : Allow all access to tcp port 80, 443 and 1102 (ssh port)
+  become: yes
+  ufw:
+    rule=allow
+    port={{ item }}
+    proto=tcp
+  with_items:
+    [80, 443, "{{ ssh_port }}" ]
