@@ -15,11 +15,7 @@
   file: path=/etc/nginx/sites-enabled/default state=absent
   notify: reload nginx
 
-- name: Installation PHP
-  become: yes
-  include: php.yml
-
 - name: Configuration des sites
   become: yes
-  include: site.yml
+  include_tasks: site.yml
   with_items: domains

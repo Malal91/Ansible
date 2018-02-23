@@ -1,0 +1,36 @@
+---
+- name: Installation de mysql
+  become: yes
+  apt: name={{ item }} state=latest
+  with_items: mysql_packages
+
+- name: mettre à jour le mot de passe root de tous les comptes
+  become: yes
+  mysql_user: name=root host={{ item }} password={{ mysql_root_passwd }}
+  with_items: hostsname
+
+- name: s'assurer qu'il n'ya pas d'utilisateur anonyme dans la base donnée
+  become: yes
+  mysql_user: name='' host={{ item }} state=absent
+  with_items: hostsname
+
+- name: supprimer la base de donnée test
+  become: yes
+  mysql_db: name=test state=absent
+
+- name: Création des bases de données neccessaire
+  become: yes
+  mysql_db: name={{ item.name }} state=present
+  with_items: mysql_db
+
+- name: création des utilisateurs des bases de données
+  become: yes
+  mysql_user:
+    name={{ item.name }}
+    password={{ item.pass|default("osr_db@osr.com") }}
+    priv={{ item.priv|default("*.*:ALL,GRANT") }}
+    state=present
+    host={{ item.host|default("localhost") }}
+  with_items:
+    - "{{ mysql_users }}"
+  when: mysql_users|lower() != 'none'

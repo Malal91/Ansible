@@ -1,0 +1,4 @@
+mysql_packages:
+  - mysql-server
+  - mysql-client
+mysql_root_passwd: MaAmAbHoAsDi

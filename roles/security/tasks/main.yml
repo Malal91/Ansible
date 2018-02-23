@@ -10,8 +10,7 @@
 - name: Copy jail.conf
   become: yes
   template: src=jail.conf.j2 dest=/etc/fail2ban/jail.conf
-  notify:
-    restart fail2ban
+  notify: restart fail2ban
 
 - name: installation UFW - Uncomplicated Firewall
   become: yes
@@ -28,4 +27,4 @@
     port={{ item }}
     proto=tcp
   with_items:
-    [80, 443, "{{ ssh_port }}" ]
+    [80, 443, "{{ ssh_port }}"]
