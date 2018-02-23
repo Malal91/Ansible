@@ -2,7 +2,7 @@
 - hosts: web
   remote_user: osr
   vars:
-    user: opensuccessroom
+    user: osr
     mysql_db:
       name:
         - osr_db
@@ -15,9 +15,9 @@
           - 127.0.0.1
           - ::1
     domains:
-      - domain: opensuccessroom.com
+      - domain: opensuccessroom
         php: yes
-      - domain: amadoupitadiallo.com
+      - domain: amadoupitadiallo
         php: no
     hostsname:
       - localhost

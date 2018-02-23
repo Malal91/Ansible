@@ -15,4 +15,5 @@
 
 - name: "Activation du domaine {{ item.domain }}"
   file: src=/etc/nginx/site-available/{{ item.domain }} dest=/etc/nginx/sites-enabled/{{ item.domain }} state=link
+  lineinfile: dest=/etc/nginx/nginx.conf regexp='user[\s]?=' line='user = www-data'
   notify: reload nginx
