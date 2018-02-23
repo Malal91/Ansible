@@ -2,23 +2,19 @@
 - name: Disallow root SSH access
   become: yes
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
-  notify:
-    - restart ssh
+  notify: restart ssh
 
-- name: Allow only osr user to login
+- name: "Allow only {{ user }} user to login"
   become: yes
-  lineinfile: dest=/etc/ssh/sshd_config regexp="^AllowUsers" line="AllowUsers osr" state=present
-  notify:
-    - restart ssh
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^AllowUsers" line="AllowUsers {{ user }}" state=present
+  notify: restart ssh
 
 - name: Disallow password authentication
   become: yes
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
-  notify:
-    - restart ssh
+  notify: restart ssh
 
 - name: change SSHD port
   become: yes
   lineinfile: dest=/etc/ssh/sshd_config regexp="^Port 22" line="Port {{ ssh_port }}" state=present
-  notify:
-    - restart ssh
+  notify: restart ssh

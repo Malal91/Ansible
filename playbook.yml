@@ -3,18 +3,33 @@
   remote_user: osr
   vars:
     user: opensuccessroom
-    owner: opensuccessroom
-    home: opensuccessroom
+    mysql_db:
+      name:
+        - osr_db
+    mysql_users:
+      - name: osr
+        pass: osr_db@osr.com
+        priv:
+        host:
+          - localhost
+          - 127.0.0.1
+          - ::1
     domains:
-      - domain: opensuccessroom
+      - domain: opensuccessroom.com
         php: yes
-      - domain: amadoupitadiallo
+      - domain: amadoupitadiallo.com
         php: no
+    hostsname:
+      - localhost
+      - 127.0.0.1
+      - ::1
 
   roles:
     - utils
     - user
+    - php
+    - mysql
     - nginx
-    - security
     - ssh
+    - security
 ...
