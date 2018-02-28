@@ -2,34 +2,27 @@
 - hosts: web
   remote_user: osr
   vars:
-    user: opensuccessroom
+    user: amadou
     mysql_db:
-      name:
-        - osr_db
+      - name: osr_db_db
     mysql_users:
       - name: osr
         pass: osr_db@osr.com
-        priv:
-        host:
-          - localhost
-          - 127.0.0.1
-          - ::1
+        db: osr_db_db
     domains:
-      - domain: opensuccessroom.com
+      - domain: opensuccessroom
         php: yes
-      - domain: amadoupitadiallo.com
-        php: no
-    hostsname:
-      - localhost
-      - 127.0.0.1
-      - ::1
+    node_v: 8
+    os_name: xenial
+    mysql_root_passwd: MaAmAbHoAsDi
 
   roles:
     - utils
     - user
     - php
-    - mysql
+  #  - mysql
     - nginx
+    - node
     - ssh
     - security
 ...

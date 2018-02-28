@@ -15,7 +15,7 @@
   file: path=/etc/nginx/sites-enabled/default state=absent
   notify: reload nginx
 
-- name: Configuration des sites
-  become: yes
-  include_tasks: site.yml
-  with_items: domains
+#- name: Configuration des sites
+#  become: yes
+#  include_tasks: site.yml
+#  with_items: domains
