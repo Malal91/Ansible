@@ -4,17 +4,17 @@
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
   notify: restart ssh
 
-- name: "Allow only {{ user }} user to login"
+- name: "Seulmant l'utilisateur {{ user }} pourra se connecter"
   become: yes
   lineinfile: dest=/etc/ssh/sshd_config regexp="^AllowUsers" line="AllowUsers {{ user }}" state=present
   notify: restart ssh
 
-- name: Disallow password authentication
+- name: Interdiction de se connecter avec mot de passe
   become: yes
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
   notify: restart ssh
 
-- name: change SSHD port
+- name: changement du port par defaut de SSH
   become: yes
   lineinfile: dest=/etc/ssh/sshd_config regexp="^Port 22" line="Port {{ ssh_port }}" state=present
   notify: restart ssh

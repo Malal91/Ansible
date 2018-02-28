@@ -5,7 +5,7 @@
 
 - name: installation des outils neccessaires des serveurs
   become: yes
-  apt: name={{ item }} apt_cache=yes state=latest
+  apt: name={{ item }} state=latest
   with_items:
     - git
     - curl

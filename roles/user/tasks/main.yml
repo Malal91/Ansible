@@ -4,6 +4,7 @@
     ###################################
 
 - name: Création d'un Utilisateur
+  become: yes
   when: user is defined
   user:
     name={{ user }}
@@ -11,13 +12,15 @@
     comment="{{ user }} utilisateur"
     state=present
 - name: Ajout de la clef SSH de l'utilisateur
+  become: yes
   when: user is defined
   authorized_key:
     user={{ user }}
     key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 - name: "{{ user }} devient root"
+  become: yes
   when: user is defined
   template:
-    src=template/sudoer-user.j2
+    src=templates/sudoer-user.j2
     dest=/etc/sudoers.d/{{ user }}-sudoer
     validate='visudo -cf %s'
