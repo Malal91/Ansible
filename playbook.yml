@@ -4,11 +4,11 @@
   vars:
     user: amadou
     mysql_db:
-      - name: osr_db_db
+      - name: osr_db
     mysql_users:
       - name: osr
         pass: osr_db@osr.com
-        db: osr_db_db
+        db: osr_db
     domains:
       - domain: opensuccessroom
         php: yes
