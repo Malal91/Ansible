@@ -1,0 +1,58 @@
+# /etc/nginx/sites-enabled/chapchap224.com.conf
+server {
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	server_name chapchap224.com;
+	set $base /var/www/chapchap224.com;
+	root $base/public;
+
+	# SSL
+	ssl_certificate /etc/letsencrypt/live/chapchap224.com/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/chapchap224.com/privkey.pem;
+	ssl_trusted_certificate /etc/letsencrypt/live/chapchap224.com/fullchain.pem;
+
+	# index.php
+	index index.php;
+
+	# index.php fallback
+	location / {
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	# handle .php
+	location ~ \.php$ {
+		include /etc/nginx/nginxconfig.io/php_fastcgi.conf;
+	}
+
+	include /etc/nginx/nginxconfig.io/general.conf;
+}
+
+# subdomains redirect
+server {
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	server_name *.chapchap224.com;
+
+	# SSL
+	ssl_certificate /etc/letsencrypt/live/chapchap224.com/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/chapchap224.com/privkey.pem;
+	ssl_trusted_certificate /etc/letsencrypt/live/chapchap224.com/fullchain.pem;
+
+	return 301 https://chapchap224.com$request_uri;
+}
+
+# HTTP redirect
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name .chapchap224.com;
+
+	include nginxconfig.io/letsencrypt.conf;
+
+	location / {
+		return 301 https://chapchap224.com$request_uri;
+	}
+}

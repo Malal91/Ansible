@@ -3,17 +3,36 @@
   #    Configuration des sites disponibles     #
   ##############################################
 
-#- name: Création du domaine
-#  file: path=/home/{{ user }}/{{ item.domain }}.com/www state=directory owner={{ user }}
+- name: Création du domaine
+  file:
+    path: /home/{{ user }}/{{ domain }}/www
+    state: directory
+    owner: "{{ user }}"
 
-#- name: Lien symbolique vers /var/www
-#  file: src=/home/{{ user }}/{{ item.domain }}/www dest=/var/www/{{ item.domain }} state=link
+- name: CREATE LOG DIRECTORY
+  file:
+    path: /home/{{ user }}/{{ domain }}/log
+    state: directory
+    owner: "{{ user }}"
 
-#- name: Création de la configuration
-#  template: src=templates/nginx.j2 dest=/etc/nginx/site-available/{{ item.domain }} force=yes
-#  notify: reload nginx
+- name: Lien symbolique vers /var/www
+  file: src=/home/{{ user }}/{{ domain }}/www dest=/var/www/{{ domain }} state=link
 
-#- name: "Activation du domaine {{ item.domain }}"
- # file: src=/etc/nginx/site-available/{{ item.domain }} dest=/etc/nginx/sites-enabled/{{ item.domain }} state=link
-  #lineinfile: dest=/etc/nginx/nginx.conf regexp='user[\s]?=' line='user = www-data'
-  #notify: reload nginx
+- name: CREATE DIRECTORY nginxconfig.io
+  file: path=/etc/nginx/nginxconfig.io state=directory force=yes
+
+- name: ADD FILE nginx.conf
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf force=yes
+
+- name: ADD FILE php_fastcgi
+  template: src=templates/php_fastcgi.j2 dest=/etc/nginx/nginxconfig.io/php_fastcgi.conf force=yes
+
+- name: ADD FILE general.conf
+  template: src=templates/general.j2 dest=/etc/nginx/nginxconfig.io/general.conf force=yes
+
+- name: CREATE CONFIGURATION DOMAINE
+  template: src=templates/vhost.j2 dest=/etc/nginx/sites-available/{{ domain }}.conf force=yes
+
+- name: "ACTIVE DOMAINE {{ domain }}"
+  file: src=/etc/nginx/sites-available/{{ domain }}.conf dest=/etc/nginx/sites-enabled/{{ domain }}.conf state=link
+  notify: reloaded nginx

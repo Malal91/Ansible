@@ -1,43 +1,44 @@
 ---
-- name: Installation de mysql
-  become: yes
-  apt: name={{ item }} state=latest
-  with_items:
-    - mysql-server
-    - mysql-client
-    - python-mysqldb
-
-#- name: mettre à jour le mot de passe root de tous les comptes
-#  become: yes
-#  mysql_user: name=root host_all=yes password={{ mysql_root_passwd }}
-#  notify: restart mysql
-
-#- name: s'assurer qu'il n'ya pas d'utilisateur anonyme dans la base donnée
-#  become: yes
-#  mysql_user: name='' host=localhost state=absent
-#  notify: restart mysql
-
-#- name: supprimer la base de donnée test
-#  become: yes
-#  mysql_db: name=test state=absent
-#  notify: restart mysql
-
-- name: Creation des bases de données neccessaire
-  become: yes
-  mysql_db: name={{ item.name }} state=present
-  with_items:
-    - "{{mysql_db}}"
-  notify: restart mysql
-
-- name: création des utilisateurs des bases de données
-  become: yes
+- name: MySQL Install
+  apt:
+    name:
+      #- mysql-server
+      - python-mysqldb
+    state: present
+#- name: Install MySQL-python
+#  pip: executable=pip3 name=MySQL-python
+#- name: MySQL | Set root password
+#  mysql_user:
+#    name: root
+#    password: "{{ mysql_root_password }}"
+#    check_implicit_admin: yes
+#    login_user: root
+#    login_password: ""
+#    state: present
+- name: MySQL | Remove anonyme user
   mysql_user:
-    name={{ item.name }}
-    password={{ item.pass|default("osr_db@osr.com") }}
-    priv="{{ item.db }}.*:ALL,GRANT"
-    state=present
-    host="%"
-  with_items:
-    - "{{ mysql_users }}"
-  notify: restart mysql
-  when: mysql_users|lower() != 'none'
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: ""
+    state: absent
+- name: MySQL | remove database test
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    db: test
+    state: absent
+- name: MySQL | Create all database
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    db: "{{ mysql_db }}"
+    state: present
+- name: "MySQL | create User {{ mysql_user }}"
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_user_password }}"
+    priv: "{{ mysql_db }}.*:ALL,GRANT"
+    host: localhost
+    state: present

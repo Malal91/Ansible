@@ -1,27 +1,59 @@
 ---
-- name: Installation des modules php
-  become: yes
-  apt: name={{ item }} state=latest
-  with_items:
-    - "{{php_packages}}"
+- name: Install PYTHON SOFTWARE for php
+  apt:
+    name:
+      - python-software-properties
+- name: Add ondrj/ppa repository
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+- name: Install PHP modules
+  apt:
+    update_cache: yes
+    name:
+      - "php{{ php_version }}"
+      - "php{{ php_version }}-common"
+      - "php{{ php_version }}-cli"
+      - "php{{ php_version }}-curl"
+      - "php{{ php_version }}-cgi"
+      - "php{{ php_version }}-fpm"
+      - "php{{ php_version }}-mbstring"
+      - "php{{ php_version }}-mysql"
+      - "php{{ php_version }}-xml"
+      - "php{{ php_version }}-json"
+      - "php{{ php_version }}-redis"
+      - "php{{ php_version }}-zip"
+      - "php{{ php_version }}-bz2"
+    state: present
+- name: PHP | Composer
+  shell:
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+    mv composer.phar /usr/local/bin/composer
+  args:
+    creates: /usr/local/bin/composer
 
-- name: Suppression de quelques fonctions dangereuses de php
-  become: yes
-  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='disable_functions[\s]?=' line='disable_functions = exec,passthru,shell_exec,proc_open,popen'
+- name: PHP | Disable Errors
+  lineinfile:
+    dest: "/etc/php/{{ php_version }}/fpm/php.ini"
+    regexp: "display_errors ="
+    line: "display_errors = 0"
+  notify: php restart
 
-- name: Modification du POST MAX SIZE de php
-  become: yes
-  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='post_max_size[\s]?=' line='post_max_size = {{ php_post_max_size }}'
-
-- name: Modification de UPLOAD MAX FILESIZE de php
-  become: yes
-  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='upload_max_filesize[\s]?=' line='upload_max_filesize = {{ php_upload_max_filesize }}'
-
-- name: Modification de la limit de memoire en php
-  become: yes
-  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='memory_limit[\s]?=' line='memory_limit = {{ php_memory_limit }}'
-
-- name: Modification du time zone de php
-  become: yes
-  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='date.timezone[\s]?=' line='date.timezone = {{ php_timezone }}'
-  notify: restart php-fpm
+#- name: Modification du POST MAX SIZE de php
+#  become: yes
+#  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='post_max_size[\s]?=' line='post_max_size = {{ php_post_max_size }}'
+#
+#- name: Modification de UPLOAD MAX FILESIZE de php
+#  become: yes
+#  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='upload_max_filesize[\s]?=' line='upload_max_filesize = {{ php_upload_max_filesize }}'
+#
+#- name: Modification de la limit de memoire en php
+#  become: yes
+#  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='memory_limit[\s]?=' line='memory_limit = {{ php_memory_limit }}'
+#
+#- name: Modification du time zone de php
+#  become: yes
+#  lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp='date.timezone[\s]?=' line='date.timezone = {{ php_timezone }}'
+#  notify: restart php-fpm

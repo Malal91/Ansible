@@ -1,19 +1,6 @@
-php_packages:
-  - php7.0
-  - php7.0-common
-  - php7.0-cli
-  - php7.0-curl
-  - php7.0-cgi
-  - php7.0-fpm
-  - php7.0-mcrypt
-  - php7.0-mbstring
-  - php7.0-mysql
-  - php7.0-xml
-  - php7.0-json
-  - php7.0-redis
-  - php7.0-memcached
-  - php7.0-bz2
-php_timezone: "UTC"
-php_upload_max_filesize: "20M"
-php_post_max_size: "20M"
-php_memory_limit: "1024M"
+---
+php_version: 7.2
+#php_timezone: "UTC"
+#php_upload_max_filesize: "20M"
+#php_post_max_size: "20M"
+#php_memory_limit: "1024M"

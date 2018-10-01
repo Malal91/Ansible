@@ -1,28 +1,31 @@
 ---
-- hosts: web
-  remote_user: osr
+- hosts: all
+  remote_user: root
   vars:
-    user: amadou
-    mysql_db:
-      - name: osr_db_db
-    mysql_users:
-      - name: osr
-        pass: osr_db@osr.com
-        db: osr_db_db
-    domains:
-      - domain: opensuccessroom
-        php: yes
+    letsencrypt_webroot_path: /var/www/html
+    letsencrypt_email: info@chapchap224.com
+    letsencrypt_cert_domains:
+      - www.chapchap224.com
+      - chapchap224.com
+    letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
+    mysql_db: chachap224_db
+    mysql_user: chapchap224_user
+    mysql_user_password: chapchap224_pass
+    mysql_root_password: 00224Malal00224
+    domain: chapchap224.com
+    php_version: 7.2
+    php: yes
     node_v: 8
     os_name: xenial
-    mysql_root_passwd: MaAmAbHoAsDi
-
   roles:
+    #- python
     - utils
     - user
     - php
-  #  - mysql
+    - mysql
     - nginx
+    - letsencrypt
     - node
-    - ssh
-    - security
+  #  - ssh
+  #  - security
 ...

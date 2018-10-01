@@ -1,2 +1,5 @@
 [web]
-ubuntu ansible_ssh_port=2222 ansible_ssh_host=127.0.01 ansible_connection=ssh ansible_ssh_user=amadou
+31.207.35.231 ansible_python_interpreter=/usr/bin/python3
+
+[web:vars]
+user=chapchap224

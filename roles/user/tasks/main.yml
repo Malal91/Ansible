@@ -3,7 +3,7 @@
     #    Gestion des utilisateurs     #
     ###################################
 
-- name: Création d'un Utilisateur
+- name: "Création d'un Utilisateur {{ user }}"
   become: yes
   when: user is defined
   user:
@@ -11,16 +11,16 @@
     shell=/usr/bin/zsh
     comment="{{ user }} utilisateur"
     state=present
-- name: Ajout de la clef SSH de l'utilisateur
+- name: "Ajout de la clef SSH de l'utilisateur {{ user }}"
   become: yes
   when: user is defined
   authorized_key:
-    user={{ user }}
+    user="{{ user }}"
     key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-- name: "{{ user }} devient root"
-  become: yes
-  when: user is defined
-  template:
-    src=templates/sudoer-user.j2
-    dest=/etc/sudoers.d/{{ user }}-sudoer
-    validate='visudo -cf %s'
+#- name: "{{ user }} devient root"
+#  become: yes
+#  when: user is defined
+#  template:
+#    src=templates/sudoer-user.j2
+#    dest=/etc/sudoers.d/{{ user }}-sudoer
+#    validate='visudo -cf %s'

@@ -3,6 +3,11 @@
     #    les outils neccessaires pour le serveur     #
     ##################################################
 
+- name: APT | Update & Upgrade
+  apt:
+    upgrade: dist
+    update_cache: yes
+
 - name: installation des outils neccessaires des serveurs
   become: yes
   apt: name={{ item }} state=latest

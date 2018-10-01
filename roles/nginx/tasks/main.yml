@@ -4,18 +4,17 @@
   #############################
 
 - name: Installation nginx
-  become: yes
   apt:
-    name=nginx
-    state=latest
+    name: nginx
+    state: latest
   notify: restart nginx
 
-- name: Suppression de default.conf
-  become: yes
-  file: path=/etc/nginx/sites-enabled/default state=absent
-  notify: reload nginx
+#- name: Suppression de default.conf
+#  file: path=/etc/nginx/sites-enabled/default state=absent
+#  notify: reload nginx
 
-#- name: Configuration des sites
-#  become: yes
-#  include_tasks: site.yml
-#  with_items: domains
+- name: DELETE DEFAULT nginx.conf
+  file: path=/etc/nginx/nginx.conf state=absent
+
+- name: SITE CONFIGURATION
+  include_tasks: site.yml
